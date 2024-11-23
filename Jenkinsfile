@@ -7,11 +7,8 @@ pipeline {
   stages {
     stage('checkout') {
       steps {
-        script{
         dir("terraform") 
-          {
-            git " 
-          }
+        git " https://github.com/Anusuya-murugiah/automate-terraform-pjt1.git"
       }
     }
   }
