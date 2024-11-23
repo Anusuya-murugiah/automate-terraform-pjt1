@@ -8,11 +8,10 @@ pipeline {
     stage('checkout') {
       steps {
         dir("terraform") {
-        git "https://github.com/Anusuya-murugiah/automate-terraform-pjt1.git"
+        git branch: 'main', url: 'https://github.com/Anusuya-murugiah/automate-terraform-pjt1.git'
         }  
       }
     }
   }
-  
 }
 
