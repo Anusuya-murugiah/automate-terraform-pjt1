@@ -25,7 +25,7 @@ pipeline {
                     dir('terraform') {
                         sh '''
                             pwd
-                            terraform init
+                            terraform init -input=false -no-color
                             terraform plan -out=tfplan
                             terraform show -no-color tfplan > tfplan.txt
                         '''
@@ -33,6 +33,11 @@ pipeline {
                 }
             }
         }
+        stage('Debug Workspace') {
+    steps {
+        sh 'pwd && ls -la'
+          }
+       }
     }
     post {
         always {
