@@ -61,8 +61,10 @@ pipeline {
            when {
                equals expected:true, actual:params.destroyResources
            }    
-           dir('terraform') {
-               sh 'terraform destroy -auto-approve'
+           steps {
+              dir('terraform') {
+                 sh 'terraform destroy -auto-approve'
+              }
            }    
          }
        }
