@@ -1,4 +1,7 @@
 pipeline {
+    parameters {
+       booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating the plan')
+    }
     environment {
         AWS_ACCESS_KEY_ID = credentials("AWS_ACCESS_KEY_ID")
         AWS_SECRET_ACCESS_KEY = credentials("AWS_SECRET_ACCESS_KEY")
@@ -12,11 +15,11 @@ pipeline {
                   if(!fileExists('terraform')) {
                       sh 'mkdir terraform' 
                     }   
+                 dir("terraform") {
+                    git branch: 'main', url: 'https://github.com/Anusuya-murugiah/automate-terraform-pjt1.git'                
                   }
-              dir("terraform") {
-                 git branch: 'main', url: 'https://github.com/Anusuya-murugiah/automate-terraform-pjt1.git'                
+               }      
             }
-         }
         }
         stage('Terraform Plan') {
             steps {
@@ -32,10 +35,26 @@ pipeline {
                 }
             }
         }
-        stage('Debug Workspace') {
-    steps {
-        sh 'pwd && ls -la'
-          }
+        stage('Approval') {
+           when {
+              not {
+                  equals expected:true, actual: params.autoApprove
+              }
+           }
+           steps {
+              script {
+                 def plan = readFile ('terraform/tfplan.txt')
+                 input message: "Do you want apply the plan?",
+                 parameters: [text(name:'Plan', defaultValue: plan, description: 'please review the plan')]
+              }
+           }
+        }
+        stage('Apply') {
+           steps {
+              dir('terraform') {
+                  sh 'terraform apply -input=false tfplan'
+              }
+           }      
        }
     }
 }
