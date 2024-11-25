@@ -7,29 +7,28 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Ensure the 'terraform' directory exists and clone the repo
-                script {
-                    if (!fileExists('terraform')) {
-                        sh 'mkdir terraform'
-                    }
-                }
-                dir("terraform") {
-                    git branch: 'main', url: 'https://github.com/Anusuya-murugiah/automate-terraform-pjt1.git'
-                }
+               // Ensure the 'terraform' directory exists and clone the repo
+               script {
+                  if(!fileExists('terraform')) {
+                      sh 'mkdir terraform' 
+                    }   
+                  }
+              dir("terraform"){
+                 git branch: 'main', url: 'https://github.com/Anusuya-murugiah/automate-terraform-pjt1.git'                
             }
+         }
         }
-
         stage('Terraform Plan') {
             steps {
-                timeout(time: 15, unit: 'MINUTES') { // Timeout to prevent hanging jobs
-                    dir('terraform') {
-                        sh '''
-                            pwd
-                            terraform init -input=false -no-color
-                            terraform plan -out=tfplan
-                            terraform show -no-color tfplan > tfplan.txt
-                        '''
-                    }
+                timeout(time: 15, unit: 'MINUTES') {
+                   dir('terraform') {
+                      sh '''
+                      pwd
+                      terraform init -input=false -no-color
+                      terraform plan -out=tfplan
+                      terraform show -no-color tfplan>tfplan.txt
+                      '''
+                   }
                 }
             }
         }
