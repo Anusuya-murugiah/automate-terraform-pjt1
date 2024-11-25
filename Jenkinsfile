@@ -13,7 +13,7 @@ pipeline {
                       sh 'mkdir terraform' 
                     }   
                   }
-              dir("terraform"){
+              dir("terraform") {
                  git branch: 'main', url: 'https://github.com/Anusuya-murugiah/automate-terraform-pjt1.git'                
             }
          }
@@ -26,7 +26,7 @@ pipeline {
                       pwd
                       terraform init -input=false -no-color
                       terraform plan -out=tfplan
-                      terraform show -no-color tfplan>tfplan.txt
+                      terraform show -no-color tfplan > tfplan.txt
                       '''
                    }
                 }
