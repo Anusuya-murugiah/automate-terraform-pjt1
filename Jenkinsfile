@@ -1,7 +1,7 @@
 pipeline {
     parameters {
        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating the plan')
-       booleanparam(name: 'destroyResources', defaultValue: false, description: 'destroy resources after creation?')
+       booleanParam(name: 'destroyResources', defaultValue: false, description: 'destroy resources after creation?')
     }
     environment {
         AWS_ACCESS_KEY_ID = credentials("AWS_ACCESS_KEY_ID")
@@ -59,10 +59,10 @@ pipeline {
        }
        stage('destroy') {
            when {
-               equals expected:true, actual.params.destroyResources
+               equals expected:true, actual:params.destroyResources
            }    
            dir('terraform') {
-               sh 'terraform desroy -auto-approve'
+               sh 'terraform destroy -auto-approve'
            }    
          }
        }
