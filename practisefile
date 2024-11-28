@@ -50,6 +50,12 @@ pipeline {
      }
    stage("destroy") {
         when {
-          equal
+            equals expected: true, actual: params.destroyres
+        }
+        steps {
+            sh 'terraform destroy '
+        }
+      }
     }
+
 }
