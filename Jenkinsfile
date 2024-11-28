@@ -59,7 +59,7 @@ pipeline {
        }
        stage('destroy') {
            when {
-               equals expected:true, actual:params.destroyResources
+               equals expected:true, actual: params.destroyResources
            }    
            steps {
               dir('terraform') {
