@@ -1,0 +1,46 @@
+pipeline { 
+    parameters {
+        booleanParam(name: "approval_action", defaultValue: false, description: "Do you want to auto approve?")
+    }
+    environment {
+        AWS_ACCESS_KEY = credentials("AWS_ACCESS_KEY")
+        AWS_SECRET_KEY = credentials("AWS_SECRET_KEY")
+    }
+    stages {
+        stage("Checkout") { 
+            steps {
+                script {
+                    if (!fileExists("terraform")) {
+                        mkdir("terraform")
+                    }
+                    git 'https://github.com/yeshwanthlm/Terraform-Jenkins.git'
+                }
+            }
+        }
+        stage("Workout") {
+            steps {
+                script {
+                    dir('terraform') {
+                        sh '''
+                        terraform init
+                        terraform plan -out=plantf
+                        terraform show -no-color plantf > plantff.txt
+                        '''
+                    }
+                }
+            }
+        }
+       stage("approve") {
+        when {
+            not {
+                 equals expected; actual:params.approval_action
+          }
+        }  
+        steps {
+            def plan = readFile('plantf.txt)
+            input message = "pls read the plan and approve it if its correct" ,
+               parameter[text(name:approve, defaultValue: plan, description: 'pls approve it')]
+         }
+       }
+    }
+}
