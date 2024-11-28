@@ -33,14 +33,23 @@ pipeline {
        stage("approve") {
         when {
             not {
-                 equals expected; actual:params.approval_action
-          }
+               
+                 equals expected: true, actual: params.approval_action
+            }
         }  
         steps {
-            def plan = readFile('plantf.txt)
-            input message = "pls read the plan and approve it if its correct" ,
-               parameter[text(name:approve, defaultValue: plan, description: 'pls approve it')]
+            def plan = readFile('terraform/plantf.txt')
+            input message:  "pls read the plan and approve it if its correct",
+               parameters: [text(name: 'plan', defaultValue: plan, description: 'pls approve it')]
          }
        }
+     stage("apply") {
+         steps {
+             sh 'terraform apply plantf -input=false
+         }
+     }
+   stage("destroy") {
+        when {
+          equal
     }
 }
